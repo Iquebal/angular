@@ -1,0 +1,702 @@
+<app-progress-line *ngIf="isRequesting"></app-progress-line>
+<div *ngIf="search_box">  
+<app-page-container maintitle="Search">  
+  <div class="row">
+        <div class="col-md-12">
+      <form>
+        <div class="input-group mb-3">
+            <input type="search" class="form-control" name="query" [(ngModel)]="query" (keyup.enter)="search()" placeholder="Search">
+            <div class="input-group-append">
+                <button type="button" (click)="search()">Search</button> 
+            </div>
+          </div>
+        <div class="text-center"> <a class="btn btn-primary btn-md" routerLink="/company"> 
+          <i class="add-circle action-btn"></i>Add Company</a></div>  
+    </form>
+    </div>
+    </div>
+</app-page-container>
+</div>
+
+<div *ngIf="search_dialog">
+  <app-page-container maintitle="Details"> 
+      <form>
+          <div class="input-group mb-3">
+              <input type="search" class="form-control" name="query" [(ngModel)]="query" (keyup.enter)="search()" placeholder="Search">
+              <div class="input-group-append">
+                  <button type="button" (click)="search()">Search</button> 
+              </div>
+            </div>
+          <div class="text-center"> <a class="btn btn-primary btn-md" routerLink="/company"> 
+            <i class="add-circle action-btn"></i>Add Company</a></div>  
+      </form>
+      <div class="table-responsive">
+        <table *ngIf="searchResults" class="table table-bordered">
+        <thead class="thead-light">
+          <tr>
+            <th>Company</th>
+            <th>Website</th>
+            <th>Host Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let company of searchResults; let i=index">
+            <td>{{company.companyName}}</td>
+            <td>{{company.website}}</td>
+            <td>{{company.hostname}}</td>
+            <td>{{company.phoneNum}}</td>
+            <td>{{company.email}}</td>
+            <td>
+                <a (click)="getCompanys(company.id);"  class="no-decoration">
+                    <i [Tooltip]="'View Details'" class="icon-visibility action-btn"></i>
+                </a> 
+                <!-- <a (click)="DeleteCompany(company.id, deleteConfirm);" class="no-decoration">
+                  <i [Tooltip]="'Delete'" class="icon-delete action-btn"></i>
+                </a>  -->
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+  </app-page-container>
+</div> 
+
+ <div *ngIf="show_dialog">
+<app-page-container maintitle="Details">
+    <tabset type="pills">
+      <tab heading="Company" id="tab1">
+          <nav class="my-2 my-md-0 mr-md-3 float-right">
+            </nav>
+          <div class="table-responsive">
+              <table class="table table-bordered">
+                  <thead class="thead-light">
+                <tr>
+                    <th>Company</th>
+                    <th>Website</th>
+                    <th>Host Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let companyDet of company; let i=index">
+                    <td>{{companyDet.companyName}}</td>
+                    <td>{{companyDet.website}}</td>
+                    <td>{{companyDet.hostname}}</td>
+                    <td>{{companyDet.phoneNum}}</td>
+                    <td>{{companyDet.email}}</td>
+                    <td>
+                        <a (click)="edit(companyDet)" class="no-decoration">
+                          <i [Tooltip]="'Edit'" class="icon-mode_edit action-btn"></i>
+                        </a> 
+                        <a (click)="deleteCompany(companyDet.id, deleteConfirm);" class="no-decoration">
+                          <i [Tooltip]="'Delete'" class="icon-delete action-btn"></i>
+                        </a>
+                </tr>
+                </tbody>
+              </table>
+          </div>
+       </tab> 
+      <tab heading="Location"> 
+          <nav class="my-2 my-md-0 mr-md-3 float-right">
+              <a class="btn btn-primary btn-sm" routerLink="/location"> 
+                <i class="add-circle action-btn"></i>Add Location</a>
+            </nav>
+            <div class="table-responsive">
+          <table class="table table-bordered">
+              <thead class="thead-light">
+                <tr>
+                    <th>Location</th>
+                    <th>Woe ID</th>
+                    <th>Street Address</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Country</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let locationDet of location; let i=index">
+                    <td>{{locationDet.location_name}}</td>
+                    <td>{{locationDet.woeid}}</td>
+                    <td>{{locationDet.streetaddr}}</td>
+                    <td>{{locationDet.city}}</td> 
+                    <td>{{locationDet.state}}</td> 
+                    <td>{{locationDet.country}}</td>
+                    <td>
+                      <a (click)="editLocation(locationDet)" class="no-decoration">
+                          <i [Tooltip]="'Edit'" class="icon-mode_edit action-btn"></i>
+                        </a> 
+                        <a (click)="deleteLocation(locationDet.id, deleteConfirm);" class="no-decoration">
+                          <i [Tooltip]="'Delete'" class="icon-delete action-btn"></i>
+                        </a>
+                </tr>
+                </tbody>
+          </table> </div>
+      </tab> <!--/Location-->
+      <tab heading="User">
+          <nav class="my-2 my-md-0 mr-md-3 float-right">
+              <a class="btn btn-primary btn-sm" routerLink="/user"> 
+                <i class="add-circle action-btn"></i>Add User</a>
+            </nav>
+          <div class="table-responsive">
+          <table class="table table-bordered">
+              <thead class="thead-light">
+              <tr>
+                  <th>User Name</th>
+                  <th>Name</th>
+                  <th>Login Count</th>
+                  <th>Actions</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let userDet of userSenseable; let i=index">
+                  <td>{{userDet.username}}</td>
+                  <td>{{userDet.name}}</td>
+                  <td>{{userDet.login_count}}</td>
+                  <td>
+                    <a (click)="editUser(userDet)" class="no-decoration">
+                      <i [Tooltip]="'Edit'" class="icon-mode_edit action-btn"></i>
+                    </a> 
+                    <a (click)="deleteUser(userDet.id, deleteConfirm);" class="no-decoration">
+                      <i [Tooltip]="'Delete'" class="icon-delete action-btn"></i>
+                    </a>
+              </tr>
+              </tbody>
+        </table> </div>
+     </tab> <!--/user-->
+      <tab heading="Entity">
+          <nav class="my-2 my-md-0 mr-md-3 float-right">
+              <a class="btn btn-primary btn-sm" routerLink="/entity"> 
+                <i class="add-circle action-btn"></i>Add Entity</a>
+            </nav>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+              <thead class="thead-light">
+              <tr>
+                  <th>Type</th>
+                  <th>Name</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let entityDet of companyEntity; let i=index">
+                  <td>{{entityDet.type}}</td>
+                  <td>{{entityDet.name}}</td>
+                  <td><span ng-if="entityDet.status == A">Active</span>
+                  <!-- <span ng-if="entityDet.status == D"><Deactive</span>  -->
+                  </td>
+                  <td>
+                      <a (click)="editEntity(entityDet)" class="no-decoration">
+                          <i [Tooltip]="'Edit'" class="icon-mode_edit action-btn"></i>
+                        </a> 
+                        <a (click)="deleteEntity(entityDet, deleteConfirm);" class="no-decoration">
+                          <i [Tooltip]="'Delete'" class="icon-delete action-btn"></i>
+                        </a>
+              </tr>
+              </tbody>
+        </table> 
+      
+        </div>
+      </tab> <!--/entity-->
+      <tab heading="Device">
+          <nav class="my-2 my-md-0 mr-md-3 float-right">
+              <a class="btn btn-primary btn-sm" routerLink="/device"> 
+                <i class="add-circle action-btn"></i>Add Device</a>
+            </nav>
+          <div class="table-responsive">
+          <table class="table table-bordered">
+              <thead class="thead-light">
+              <tr>
+                  <th>Hardware Id</th>
+                  <th>Type</th>
+                  <th>Name</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let deviceDet of device; let i=index">
+                  <td>  {{deviceDet.hardwareid}}</td>
+                  <td>{{deviceDet.type}}</td>
+                  <td>{{deviceDet.name}}</td>
+                  <td><!-- {{deviceDet.status}} -->
+                    <span ng-if="deviceDet.status == A">Active</span>
+                    <!-- <span ng-if="deviceDet.status == D">Deactive</span> -->
+                 </td>
+                  <td>
+                      <a (click)="editDevice(deviceDet)" class="no-decoration">
+                          <i [Tooltip]="'Edit'" class="icon-mode_edit action-btn"></i>
+                        </a>
+                      <a (click)="deleteDevice(deviceDet, deleteConfirm);" class="no-decoration">
+                        <i [Tooltip]="'Delete'" class="icon-delete action-btn"></i>
+                      </a>
+              </tr>
+              </tbody>
+        </table> </div>
+      </tab><!--/device-->
+    </tabset> 
+ </app-page-container> 
+</div>
+
+<div *ngIf="company_dialog">
+   <app-company [company]=companyDetail (clicked)="onClicked($event)"></app-company> 
+</div> 
+
+<div *ngIf="location_dialog">
+    <app-location [location]=locationDetail (clicked)="onClickedMe($event)"></app-location> 
+ </div> 
+
+ <!--User component-->
+ <div *ngIf="user_dialog">
+    <app-user [user]=userDetail (clicked)="onClickedUser($event)"></app-user> 
+ </div> 
+
+ <!--Entity component-->
+ <div *ngIf="entity_dialog">
+    <app-entity [entity]=entityDetail (clicked)="onClickedEntity($event)"></app-entity> 
+ </div> 
+
+ <div *ngIf="device_dialog">
+    <app-device [device]=deviceDetail (clicked)="onClickedDevice($event)"></app-device> 
+ </div>
+
+ <ng-template #deleteConfirm let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Confirmation</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d('cancel')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+       Are you sure to delete this user? You cannot undo this later.
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger btn-outline-dark" (click)="c('confirm')">Okay</button>
+      <button type="button" class="btn btn-primary" (click)="d('cancel')">Cancel</button>
+    </div>
+  </ng-template>
+  
+  ### search.component.ts ####
+  import { Component, OnDestroy, OnInit } from '@angular/core';
+import { company, SearchService } from '../shared';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {DetailsService } from  '../shared/details/details.service';
+import { EntityService } from 'app/iot/entity/entity.service';
+import { CompanyService } from 'app/iot/company/company.service';
+import { LocationService } from 'app/iot/location/location.service';
+import { DeviceServiceService } from 'app/iot/device/device-service.service';
+import { UserService } from 'app/iot/user/user.service';
+import { TranslateService } from '@ngx-translate/core';
+import {CompanyDetail, LocationDetail, UserDetail, EntityDetail,DeviceDetail} from '@app/iot/company.interface';
+import { RealtimeService } from '../realtime.service';
+import { UserService as Alias} from '@app/services/user.service';
+
+
+@Component({
+  selector: 'app-search',
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.scss']
+})
+export class SearchComponent implements OnInit, OnDestroy {
+  query: string;
+  searchResults: Array<company>;
+  sub: Subscription;
+  detailsComp: any = [];
+  company: any = [];  
+  location: any = [];
+  userSenseable: any = [];
+  companyEntity: any = [];
+  device: any = [];
+  entity: any = [];
+  value:string="Watch";
+  companyDetail: CompanyDetail;
+  locationDetail: LocationDetail;
+  userDetail: UserDetail;
+  entityDetail: EntityDetail;
+  deviceDetail: DeviceDetail;
+  
+ // search_box : boolean = true;
+ 
+  constructor(private searchService: SearchService, 
+    private route: ActivatedRoute,
+    private Router: Router,
+    private modalService: NgbModal,
+    private requests: SearchService,
+    private translate: TranslateService,
+    public detailsService: DetailsService,
+    public entityService: EntityService,
+    public companyService: CompanyService,
+    public locationService: LocationService,
+    public deviceServiceService: DeviceServiceService,
+    public userService: UserService,
+    private realtime: RealtimeService,
+    private user: Alias,
+    ) { }
+  
+   
+  ngOnInit() {
+    this.realtime.connectToRoom(this.user.GetToken());
+    this.sub = this.route.params.subscribe(params => {
+      if (params['term']) {
+        this.query = decodeURIComponent(params['term']);
+        this.search();
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
+  }
+  public search_dialog : boolean = false;
+  public company_dialog : boolean = false;
+  public location_dialog : boolean = false;
+  public user_dialog : boolean = false;
+  search(): void {
+    this.search_dialog = true;
+    this.search_box = false;
+    this.searchService.search(this.query).subscribe(
+      (data: any) => { 
+        this.searchResults = data;
+        },
+      error => console.log(error),
+    );
+    }
+   
+     open(content, company) {
+      this.modalService.open(content).result.then((result) => {
+        this.requests.deleteCompany(company.id)
+        .subscribe( data => {
+          this.searchResults = this.searchResults.filter(u => u !== company);
+        });
+      });
+    } 
+
+   public show_dialog : boolean = false;
+   public search_box : boolean = true;
+   public company_box : boolean = false;
+   public user_box : boolean = false;
+   public entity_dialog : boolean = false;
+   public device_dialog : boolean = false;
+   
+   getCompanys(id): void {
+      this.search_dialog  = false;
+      this.search_box = false;
+      this.company_box = true;
+      this.detailsService.getCompanys(id).subscribe((data: any) => { 
+      this.show_dialog = !this.show_dialog;
+        
+      this.detailsComp = data;
+      this.company = data["company"];
+      this.location = data["location"];
+      this.userSenseable = data["userSenseable"];
+      this.companyEntity = data["companyEntity"];
+      this.device = data["device"];
+        },
+        error => console.log(error),
+      );
+   } 
+      onClicked(company1:CompanyDetail){
+        let company=  company1.companyName;
+        this.companyDetail=company1;
+        this.search_dialog  = false;
+        this.search_box = false; 
+        if(company1.id!=0){  
+        this.getCompanys=null;//this.getCompanys.filter(res=>res.pname.startsWith(id));  
+        }
+      }
+      
+  edit(company:CompanyDetail){ 
+        this.onClicked(company);
+        this.search_dialog  = false;
+        this.search_box = false; 
+        this.show_dialog = false; 
+        this.company_dialog  = true;
+       // this.location_dialog  = true;
+        if(company.id!=0){  
+        this.getCompanys = null;//this.getCompanys.filter(res=>res.pname.startsWith(id));  
+        }  
+      } 
+
+    // edit for location
+    onClickedMe(location1:LocationDetail){
+      let location=  location1.location_name;
+      this.locationDetail=location1; 
+      this.search_dialog  = false;
+      this.search_box = false; 
+      if(location1.id!=0){  
+       this.getCompanys=null;//this.getCompanys.filter(res=>res.pname.startsWith(id));  
+      }
+    }
+    
+    editLocation(location:LocationDetail){ 
+      this.onClickedMe(location);
+      this.search_dialog  = false;
+      this.search_box = false; 
+      this.show_dialog = false; 
+      this.location_dialog  = true;
+      if(location.id!=0){  
+       this.getCompanys = null;//this.getCompanys.filter(res=>res.pname.startsWith(id));  
+      }  
+    } 
+
+    // edit for user
+    onClickedUser(user1:UserDetail){
+      let user =  user1.username;
+      this.userDetail = user1;
+      this.search_dialog  = false;
+      this.search_box = false; 
+      if(user1.id!=0){  
+       this.getCompanys=null; 
+      }
+    }
+    
+    editUser(user:UserDetail){ 
+      this.onClickedUser(user);
+      this.search_dialog  = false;
+      this.search_box = false; 
+      this.show_dialog = false; 
+      this.user_dialog  = true;
+      if(user.id!=0){  
+       this.getCompanys = null;  
+      }  
+    }
+    
+    // edit for Entity
+    onClickedEntity(entity1:EntityDetail){
+      let entity =  entity1.id;
+      this.entityDetail = entity1;
+      console.log("entity:------------ " + JSON.stringify(entity)); 
+      this.search_dialog  = false;
+      this.search_box = false; 
+      if(entity1.entityId!=0){  
+       this.getCompanys=null; 
+      }
+    }
+    
+    editEntity(entity:EntityDetail){ 
+      this.onClickedEntity(entity);
+      this.search_dialog  = false;
+      this.search_box = false; 
+      this.show_dialog = false; 
+      this.entity_dialog  = true;
+      if(entity.entityId!=0){  
+       this.getCompanys = null;  
+      }  
+    } 
+
+    // edit for Device
+    onClickedDevice(device1:DeviceDetail){
+      console.log("entity1: " + JSON.stringify(device1));
+      let device =  device1.id;
+      this.deviceDetail = device1;
+      console.log("device: " + JSON.stringify(device)); 
+      this.search_dialog  = false;
+      this.search_box = false; 
+      if(device1.id!=0){  
+       this.getCompanys=null; 
+      }
+    }
+    
+    editDevice(device:DeviceDetail){ 
+      this.onClickedDevice(device);
+      this.search_dialog  = false;
+      this.search_box = false; 
+      this.show_dialog = false; 
+      this.device_dialog  = true;
+      if(device.id!=0){  
+       this.getCompanys = null;  
+      }  
+    } 
+    
+    errorMessage;
+    //deleteEntity (id: number) {
+    deleteEntity (entity: EntityDetail) {
+      if (confirm( this.translate.get('Are you sure to delete this Entity?')['value'])) {
+      // this.entityService.deleteEntity(id).subscribe((res: any) => {
+        this.entityService.deleteEntity(entity).subscribe((res: any) => {
+        }, error => this.errorMessage = error);
+        this.Router.navigateByUrl('/index');
+      }
+    }
+    
+     deleteCompany (id: number) {
+      if (confirm( this.translate.get('Are you sure to delete this Company?')['value'])) {
+        this.companyService.deleteCompany(id).subscribe((res: any) => {
+        }, error => this.errorMessage = error);
+        this.Router.navigateByUrl('/index');
+      }
+    }
+
+    deleteLocation (id: number) {
+      if (confirm( this.translate.get('Are you sure to delete this Location?')['value'])) {
+        this.locationService.deleteLocation(id).subscribe((res: any) => {
+        }, error => this.errorMessage = error);
+        this.Router.navigateByUrl('/index');
+      }
+    }
+
+    deleteUser (id: number) {
+      if (confirm( this.translate.get('Are you sure to delete this User?')['value'])) {
+        this.userService.deleteUser(id).subscribe((res: any) => {
+        }, error => this.errorMessage = error);
+        this.Router.navigateByUrl('/index');
+      }
+    }
+
+    //deleteDevice (id: number) {
+    deleteDevice (device: DeviceDetail) {  
+     if (confirm( this.translate.get('Are you sure to delete this Device?')['value'])) {
+        this.deviceServiceService.deleteDevice(device).subscribe((res: any) => {
+        }, error => this.errorMessage = error);
+        this.Router.navigateByUrl('/index');
+      }
+    }         
+}
+
+### search.service.ts ###
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+import 'rxjs/add/observable/of';
+import { GetNetworkError, IsSuccessEntity, GetUrl } from '@app/common';
+import 'rxjs/add/operator/toPromise';
+import { Observable, throwError } from 'rxjs';
+import { retry, catchError } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class SearchService {
+
+  constructor(private http: HttpClient) { }
+  baseUrl: string = 'http://localhost:8080/UserManagementApp/company/companySearch/';
+  baseUrl1: string = 'http://localhost:8080/UserManagementApp/company/';
+  baseUrlDetails: string = 'http://localhost:8080/UserManagementApp/company/info/';
+  getAll(q: string) {
+    /* const headers = {
+    'Authorization': 'Bearer ' + JSON.parse(window.sessionStorage.getItem('token')).access_token,
+    'Content-type': 'application/json'
+  } */
+  const headers = {
+    'X-Auth-Token': window.sessionStorage.getItem('token'),
+    'Content-type': 'application/json'
+  }
+  console.log("Token on search: " + window.sessionStorage.getItem('token'));
+   //return this.http.get('http://localhost:8080/company/companySearch/'+q,  {headers}); 
+   return this.http.get('http://localhost:8080/UserManagementApp/company/companySearch/'+q,  {headers});
+  }
+
+  search(q: string): Observable<any> {
+    if (!q || q === '*') {
+      q = '';
+    } else {
+      q = q.toLowerCase();
+    }
+    return this.getAll(q).pipe(
+      map((data: any) => data
+        .map(item => !!localStorage['company' + item.id] ?
+          JSON.parse(localStorage['company' + item.id]) : item)
+        .filter(item => JSON.stringify(item).toLowerCase().includes(q))
+      ));
+  }
+
+   //save(company: Company) {
+   save(company: company) {
+    localStorage['company' + company.id] = JSON.stringify(company);
+  } 
+
+  deleteCompany(id: number){
+    const headers = {
+      'Authorization': 'Bearer ' + JSON.parse(window.sessionStorage.getItem('token')).access_token,
+      'Content-type': 'application/json'
+    }
+    return this.http.delete(this.baseUrl1+id,{headers});
+  // localStorage['company' + id] = JSON.stringify(id);
+  }
+   
+  // details company
+  getCompanys(id: number): Observable<detailsComp> {
+    /* const headers = {
+      'Authorization': 'Bearer ' + JSON.parse(window.sessionStorage.getItem('token')).access_token,
+      'Content-type': 'application/json'
+    } */
+    const headers = {
+      'X-Auth-Token': window.sessionStorage.getItem('token'),
+      'Content-type': 'application/json'
+    }
+
+    return this.http.get<detailsComp>(this.baseUrlDetails + id, {headers})
+    .pipe(
+      retry(1),
+      catchError(this.handleError)
+    )
+  }
+
+  // Fetch company
+  getCompany(id): Observable<detailsComp> {
+    /* const headers = {
+      'Authorization': 'Bearer ' + JSON.parse(window.sessionStorage.getItem('token')).access_token,
+      'Content-type': 'application/json'
+    } */
+    const headers = {
+      'X-Auth-Token': window.sessionStorage.getItem('token'),
+      'Content-type': 'application/json'
+    }
+    return this.http.get<detailsComp>(this.baseUrlDetails + id, {headers})
+    .pipe(
+      retry(1),
+      catchError(this.handleError)
+    ) 
+  }  
+  
+   // Error handling 
+   handleError(error) {
+    let errorMessage = '';
+    if(error.error instanceof ErrorEvent) {
+      // Get client-side error
+      errorMessage = error.error.message;
+    } else {
+      // Get server-side error
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    window.alert(errorMessage);
+    return throwError(errorMessage);
+ }
+}
+
+//export class Company {
+export class company {
+  id: number;
+  companyName: string;
+  website: string;
+  hostname: string;
+  phoneNum: string;
+  email: string;
+  constructor(obj?: any) {
+    this.id = obj && Number(obj.id) || null;
+    this.companyName = obj && obj.companyName || null;
+    this.website = obj && obj.website || null;
+    this.hostname = obj && obj.hostname || null;
+    this.phoneNum = obj && obj.phoneNum || null;
+    this.email = obj && obj.email || null;
+  }
+}
+
+export class detailsComp {
+  id: number;
+  companyName: string;
+  website: string;
+  hostname: string;
+  phoneNum: string;
+  email: string;
+}
