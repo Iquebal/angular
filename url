@@ -1,4 +1,7 @@
 https://stackblitz.com/edit/angular-6-registration-login-example
 https://jasonwatmore.com/post/2018/05/16/angular-6-user-registration-and-login-example-tutorial
+Note: The index.ts files in each folder are barrel files that group the exported modules from a folder together so they can be imported
+using the folder path instead of the full module path and to enable importing multiple modules in a single
+import (e.g. import { AlertService, UserService } from '../_services').
 https://school.geekwall.in/p/rJOahBTP7/login-and-authentication-with-angular-6
-test
+
