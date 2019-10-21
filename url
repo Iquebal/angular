@@ -5,4 +5,8 @@ using the folder path instead of the full module path and to enable importing mu
 import (e.g. import { AlertService, UserService } from '../_services').
 https://school.geekwall.in/p/rJOahBTP7/login-and-authentication-with-angular-6
 ### https://dzone.com/articles/how-to-create-a-multi-field-data-filters-innbspang-1  (multi field search)
+https://www.pragimtech.com/downloadcourses/angular-6-38-videos-slides-5-hours-44-minutes/ 
+https://www.youtube.com/watch?v=JYPyy-hvjYc&list=PL6n9fhu94yhXwcl3a6rIfAI7QmGYIkfK5   (angular crud)
+https://www.pragimtech.com/downloadcourses/angular-crud-71-videos-slides-11-hours-36-minutes/
+https://drive.google.com/drive/folders/1z49q-8xkKu8N8VjdemYKTs_4IbzBeLWM?usp=sharing  (paragimtech source code)
 
